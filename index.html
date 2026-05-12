@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="/node_modules/@microsoft/signalr/dist/browser/signalr.js"></script>
+    <script src="./app.js" defer></script>
+    <title>Document</title>
+  </head>
+  <body>
+    <button type="button" id="joinRoomButton">Press to join room</button>
+    <button type="button" id="leaveRoomButton">Press to leave the room</button>
+    <button type="button" id="sendMessageButton">Press to send a message</button>
+    <button type="button" id="getMessagesButton">Press to get all messages</button>
+
+    <label for="roomIdInput">RoomId input</label>
+    <input type="text" name="roomId" value="c2332bbe-6ff1-4c55-b93c-612b7ea3dd8b" id="roomIdInput" />
+
+    <label for="messageInput">Message Content</label>
+    <input type="text" name="messageContent" value="Hello" id="messageInput" />
+  
+    <ul id="messageResponses"></ul>
+  </body>
+</html>
