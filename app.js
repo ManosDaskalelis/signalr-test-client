@@ -1,5 +1,6 @@
 const connection = new signalR.HubConnectionBuilder()
-  .withUrl("https://localhost:7274/hubs/chat")
+  .withUrl(prompt("Enter the url"))
+  // .withUrl("https://localhost:7274/hubs/chat")
   .configureLogging(signalR.LogLevel.Information)
   .build();
 
@@ -25,7 +26,7 @@ connection.on("ReceiveRoomMessage", (data) => {
 
     const li = document.createElement("li");
 
-    li.textContent = `${content} ${emojis}`;
+    li.textContent = `User: ${senderId} said => ${id} ${content}-${emojis}`;
     list.appendChild(li);
   });
 });
