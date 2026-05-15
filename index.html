@@ -4,57 +4,85 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="styles.css" />
-    <script src="/node_modules/@microsoft/signalr/dist/browser/signalr.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@microsoft/signalr/dist/browser/signalr.min.js"></script>
     <script src="./app.js" defer></script>
     <title>Chat Tester</title>
   </head>
   <body>
 
-    <!-- Room -->
-    <div class="panel">
-      <h2>Room</h2>
+    <!-- Connection Panel -->
+    <div class="panel" id="connectionPanel">
+      <h2>🔌 Connection</h2>
       <div class="field">
-        <label for="roomIdInput">Room ID</label>
-        <input type="text" id="roomIdInput" name="roomId" value="c2332bbe-6ff1-4c55-b93c-612b7ea3dd8b" />
+        <label for="urlInput">SignalR Hub URL</label>
+        <input 
+          type="text" 
+          id="urlInput" 
+          name="hubUrl" 
+          value="https://localhost:7274/hubs/chat"
+          placeholder="Enter SignalR Hub URL"
+        />
       </div>
       <div class="btn-group">
-        <button type="button" id="joinRoomButton">Join Room</button>
-        <button type="button" id="leaveRoomButton">Leave Room</button>
-        <button type="button" id="getMessagesButton">Get Messages</button>
+        <button type="button" id="connectButton">Connect</button>
+        <button type="button" id="disconnectButton" disabled>Disconnect</button>
+      </div>
+      <div id="connectionStatus" class="status-indicator">
+        <span class="status-dot disconnected"></span>
+        <span class="status-text">Disconnected</span>
       </div>
     </div>
 
-    <!-- Message -->
-    <div class="panel">
-      <h2>Message</h2>
-      <div class="field">
-        <label for="messageInput">Message ID / Content</label>
-        <input type="text" id="messageInput" name="messageContent" value="019e1670-8eb8-7f4e-8a6f-9ec603ef06b8" />
-      </div>
-      <div class="btn-group">
-        <button type="button" id="sendMessageButton">Send Message</button>
-        <button type="button" id="editMessageButton">Edit Message</button>
-        <button type="button" id="deleteMessageButton">Delete Message</button>
-      </div>
-    </div>
+    <!-- Chat Interface (disabled until connected) -->
+    <div id="chatInterface" class="disabled-overlay">
 
-    <!-- Reactions -->
-    <div class="panel">
-      <h2>Reactions</h2>
-      <div class="field">
-        <label for="emojiInput">Emoji</label>
-        <input type="text" id="emojiInput" name="reactionContent" value="😢" />
+      <!-- Room -->
+      <div class="panel">
+        <h2>Room</h2>
+        <div class="field">
+          <label for="roomIdInput">Room ID</label>
+          <input type="text" id="roomIdInput" name="roomId" value="c2332bbe-6ff1-4c55-b93c-612b7ea3dd8b" />
+        </div>
+        <div class="btn-group">
+          <button type="button" id="joinRoomButton">Join Room</button>
+          <button type="button" id="leaveRoomButton">Leave Room</button>
+          <button type="button" id="getMessagesButton">Get Messages</button>
+        </div>
       </div>
-      <div class="btn-group">
-        <button type="button" id="addReaction">Add Reaction</button>
-        <button type="button" id="removeReaction">Remove Reaction</button>
-      </div>
-    </div>
 
-    <!-- Messages -->
-    <div class="panel">
-      <h2>Messages</h2>
-      <ul id="messageResponses"></ul>
+      <!-- Message -->
+      <div class="panel">
+        <h2>Message</h2>
+        <div class="field">
+          <label for="messageInput">Message ID / Content</label>
+          <input type="text" id="messageInput" name="messageContent" value="019e1670-8eb8-7f4e-8a6f-9ec603ef06b8" />
+        </div>
+        <div class="btn-group">
+          <button type="button" id="sendMessageButton">Send Message</button>
+          <button type="button" id="editMessageButton">Edit Message</button>
+          <button type="button" id="deleteMessageButton">Delete Message</button>
+        </div>
+      </div>
+
+      <!-- Reactions -->
+      <div class="panel">
+        <h2>Reactions</h2>
+        <div class="field">
+          <label for="emojiInput">Emoji</label>
+          <input type="text" id="emojiInput" name="reactionContent" value="😢" />
+        </div>
+        <div class="btn-group">
+          <button type="button" id="addReaction">Add Reaction</button>
+          <button type="button" id="removeReaction">Remove Reaction</button>
+        </div>
+      </div>
+
+      <!-- Messages -->
+      <div class="panel">
+        <h2>Messages</h2>
+        <ul id="messageResponses"></ul>
+      </div>
+
     </div>
 
   </body>

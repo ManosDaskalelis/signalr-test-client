@@ -60,14 +60,76 @@ button {
 }
 
 button:hover { background: #c8c8c8; }
+button:disabled {
+  background: #f0f0f0;
+  color: #999;
+  cursor: not-allowed;
+}
 
+/* Connection buttons */
+#connectButton { background: #4caf50; color: #fff; }
+#connectButton:hover:not(:disabled) { background: #43a047; }
+#disconnectButton { background: #f44336; color: #fff; }
+#disconnectButton:hover:not(:disabled) { background: #e53935; }
+
+/* Room buttons */
 #joinRoomButton  { background: #4caf50; color: #fff; }
 #joinRoomButton:hover  { background: #43a047; }
 #leaveRoomButton { background: #f44336; color: #fff; }
 #leaveRoomButton:hover { background: #e53935; }
+
+/* Message buttons */
 #sendMessageButton { background: #1976d2; color: #fff; }
 #sendMessageButton:hover { background: #1565c0; }
 
+/* Connection Status Indicator */
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.status-dot.disconnected {
+  background: #f44336;
+  animation: none;
+}
+
+.status-dot.connecting {
+  background: #ff9800;
+}
+
+.status-dot.connected {
+  background: #4caf50;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* Disabled overlay for chat interface */
+.disabled-overlay {
+  position: relative;
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.disabled-overlay.enabled {
+  pointer-events: auto;
+  opacity: 1;
+}
+
+/* Messages */
 #messageResponses {
   list-style: none;
   display: flex;
