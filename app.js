@@ -342,6 +342,82 @@ function setupChatButtons() {
     });
 
   document
+    .getElementById("removeMemberButton")
+    .addEventListener("click", async () => {
+      if (!isConnected) {
+        alert("Please connect to the hub first!");
+        return;
+      }
+
+      const roomId = document.getElementById("roomIdInput").value;
+      const userId = document.getElementById("memberUserIdInput").value;
+
+      if (!roomId || !userId) {
+        alert("Please enter both Room ID and User ID!");
+        return;
+      }
+
+      try {
+        await connection.invoke("RemoveFromRoom", roomId, userId);
+        console.log("Member removed:", userId);
+      } catch (error) {
+        console.error("Error removing member:", error);
+        alert("Failed to remove member: " + error.message);
+      }
+    });
+
+  document
+    .getElementById("changeMemberRoleButton")
+    .addEventListener("click", async () => {
+      if (!isConnected) {
+        alert("Please connect to the hub first!");
+        return;
+      }
+
+      const roomId = document.getElementById("roomIdInput").value;
+      const userId = document.getElementById("memberUserIdInput").value;
+      const role = document.getElementById("memberRoleInput").value;
+
+      if (!roomId || !userId || !role) {
+        alert("Please enter Room ID, User ID, and Role!");
+        return;
+      }
+
+      try {
+        await connection.invoke("ChangeMemberRole", roomId, userId, role);
+        console.log("Member role changed:", userId, role);
+      } catch (error) {
+        console.error("Error changing member role:", error);
+        alert("Failed to change member role: " + error.message);
+      }
+    });
+
+  document
+    .getElementById("renameRoomButton")
+    .addEventListener("click", async () => {
+      if (!isConnected) {
+        alert("Please connect to the hub first!");
+        return;
+      }
+
+      const roomId = document.getElementById("roomIdInput").value;
+      const roomName = document.getElementById("roomNameInput").value;
+
+      if (!roomId || !roomName) {
+        alert("Please enter both Room ID and Room Name!");
+        return;
+      }
+
+      try {
+        await connection.invoke("RenameRoom", roomId, roomName);
+        console.log("Room renamed:", roomName);
+      } catch (error) {
+        console.error("Error renaming room:", error);
+        alert("Failed to rename room: " + error.message);
+      }
+    });
+
+  document
     .getElementById("sendMessageButton")
     .addEventListener("click", async () => {
       if (!isConnected) {
