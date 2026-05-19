@@ -15,10 +15,10 @@
       <h2>🔌 Connection</h2>
       <div class="field">
         <label for="urlInput">SignalR Hub URL</label>
-        <input 
-          type="text" 
-          id="urlInput" 
-          name="hubUrl" 
+        <input
+          type="text"
+          id="urlInput"
+          name="hubUrl"
           value="https://localhost:7274/hubs/chat"
           placeholder="Enter SignalR Hub URL"
         />
@@ -44,6 +44,8 @@
           <input type="text" id="roomIdInput" name="roomId" value="c2332bbe-6ff1-4c55-b93c-612b7ea3dd8b" />
         </div>
         <div class="btn-group">
+          <button type="button" id="joinHubButton">Join SignalR Hub</button>
+          <button type="button" id="leaveHubButton">Leave SignalR Hub</button>
           <button type="button" id="joinRoomButton">Join Room</button>
           <button type="button" id="leaveRoomButton">Leave Room</button>
           <button type="button" id="getMessagesButton">Get Messages</button>
@@ -54,8 +56,12 @@
       <div class="panel">
         <h2>Message</h2>
         <div class="field">
-          <label for="messageInput">Message ID / Content</label>
-          <input type="text" id="messageInput" name="messageContent" value="019e1670-8eb8-7f4e-8a6f-9ec603ef06b8" />
+          <label for="messageIdInput">Message ID</label>
+          <input type="text" id="messageIdInput" name="messageId" value="019e1670-8eb8-7f4e-8a6f-9ec603ef06b8" />
+        </div>
+        <div class="field">
+          <label for="messageInput">Message Content</label>
+          <input type="text" id="messageInput" name="messageContent" value="" />
         </div>
         <div class="btn-group">
           <button type="button" id="sendMessageButton">Send Message</button>
