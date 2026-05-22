@@ -43,7 +43,16 @@
           <label for="roomIdInput">Room ID</label>
           <input type="text" id="roomIdInput" name="roomId" value="c2332bbe-6ff1-4c55-b93c-612b7ea3dd8b" />
         </div>
+        <div class="field">
+          <label for="newRoomNameInput">New Room Name</label>
+          <input type="text" id="newRoomNameInput" name="newRoomName" value="" />
+        </div>
+        <div class="field">
+          <label for="roomTypeInput">Room Type</label>
+          <input type="text" id="roomTypeInput" name="roomType" value="" />
+        </div>
         <div class="btn-group">
+          <button type="button" id="createRoomButton">Create Room</button>
           <button type="button" id="joinHubButton">Join SignalR Hub</button>
           <button type="button" id="leaveHubButton">Leave SignalR Hub</button>
           <button type="button" id="joinRoomButton">Join Room</button>
@@ -71,23 +80,45 @@
           <button type="button" id="removeMemberButton">Remove Member</button>
           <button type="button" id="changeMemberRoleButton">Change Member Role</button>
           <button type="button" id="renameRoomButton">Rename Room</button>
+          <button type="button" id="deleteRoomButton">Delete Room</button>
         </div>
       </div>
 
-      <!-- Message -->
+      <!-- Send Message -->
       <div class="panel">
-        <h2>Message</h2>
+        <h2>Send Message</h2>
         <div class="field">
-          <label for="messageIdInput">Message ID</label>
-          <input type="text" id="messageIdInput" name="messageId" value="019e1670-8eb8-7f4e-8a6f-9ec603ef06b8" />
+          <label for="sendRoomIdInput">Room ID</label>
+          <input type="text" id="sendRoomIdInput" name="sendRoomId" value="" />
         </div>
         <div class="field">
-          <label for="messageInput">Message Content</label>
-          <input type="text" id="messageInput" name="messageContent" value="" />
+          <label for="sendMsgContentInput">Content</label>
+          <input type="text" id="sendMsgContentInput" name="sendMsgContent" value="" />
         </div>
         <div class="btn-group">
           <button type="button" id="sendMessageButton">Send Message</button>
+        </div>
+      </div>
+
+      <!-- Edit / Delete Message -->
+      <div class="panel">
+        <h2>Edit / Delete Message</h2>
+        <div class="field">
+          <label for="editMsgIdInput">Message ID (Edit)</label>
+          <input type="text" id="editMsgIdInput" name="editMsgId" value="" />
+        </div>
+        <div class="field">
+          <label for="editMsgContentInput">New Content</label>
+          <input type="text" id="editMsgContentInput" name="editMsgContent" value="" />
+        </div>
+        <div class="btn-group">
           <button type="button" id="editMessageButton">Edit Message</button>
+        </div>
+        <div class="field" style="margin-top:12px">
+          <label for="deleteMsgIdInput">Message ID (Delete)</label>
+          <input type="text" id="deleteMsgIdInput" name="deleteMsgId" value="" />
+        </div>
+        <div class="btn-group">
           <button type="button" id="deleteMessageButton">Delete Message</button>
         </div>
       </div>
@@ -96,8 +127,12 @@
       <div class="panel">
         <h2>Reactions</h2>
         <div class="field">
-          <label for="emojiInput">Emoji</label>
-          <input type="text" id="emojiInput" name="reactionContent" value="😢" />
+          <label for="reactionMsgIdInput">Message ID</label>
+          <input type="text" id="reactionMsgIdInput" name="reactionMsgId" value="" />
+        </div>
+        <div class="field">
+          <label for="reactionEmojiInput">Emoji</label>
+          <input type="text" id="reactionEmojiInput" name="reactionEmoji" value="😢" />
         </div>
         <div class="btn-group">
           <button type="button" id="addReaction">Add Reaction</button>
@@ -105,10 +140,20 @@
         </div>
       </div>
 
-      <!-- Messages -->
+      <!-- Typing Indicator (auto-triggered while typing in Send Message) -->
       <div class="panel">
-        <h2>Messages</h2>
-        <ul id="messageResponses"></ul>
+        <h2>Typing Indicator</h2>
+        <p class="panel-hint">Ενεργοποιείται αυτόματα όταν πληκτρολογείς στο Send Message content field.</p>
+        <div id="typingStatus" class="typing-status hidden"></div>
+      </div>
+
+      <!-- Event Log -->
+      <div class="panel">
+        <h2>Event Log</h2>
+        <div class="event-log-toolbar">
+          <button type="button" id="clearLogButton" class="btn-clear">Clear</button>
+        </div>
+        <ul id="eventLog"></ul>
       </div>
 
     </div>

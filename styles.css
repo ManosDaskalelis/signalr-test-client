@@ -129,20 +129,53 @@ button:disabled {
   opacity: 1;
 }
 
-/* Messages */
-#messageResponses {
+.panel-hint {
+  font-size: 12px;
+  color: #888;
+  margin-bottom: 8px;
+}
+
+.typing-status {
+  font-size: 13px;
+  color: #7c4dff;
+  font-style: italic;
+  animation: pulse 1s ease-in-out infinite;
+}
+
+.typing-status.hidden { display: none; }
+
+/* Event Log */
+.event-log-toolbar {
+  margin-bottom: 8px;
+}
+
+.btn-clear {
+  background: #ff7043;
+  color: #fff;
+  font-size: 12px;
+  padding: 4px 10px;
+}
+.btn-clear:hover { background: #e64a19; }
+
+#eventLog {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  max-height: 300px;
+  gap: 4px;
+  max-height: 360px;
   overflow-y: auto;
 }
 
-#messageResponses li {
-  background: #f0f4ff;
-  border: 1px solid #c9d5f5;
+#eventLog li {
+  background: #f9f9f9;
+  border: 1px solid #ddd;
   border-radius: 6px;
-  padding: 8px 12px;
-  font-size: 14px;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-family: monospace;
+  word-break: break-all;
 }
+
+.log-time { color: #999; margin-right: 6px; }
+.log-label { font-weight: bold; color: #1976d2; margin-right: 6px; }
+.log-data { color: #333; }

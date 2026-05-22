@@ -1,142 +1,3 @@
-// const connection = new signalR.HubConnectionBuilder()
-//   .withUrl(prompt("Enter the url"))
-//   // .withUrl("https://localhost:7274/hubs/chat")
-//   .configureLogging(signalR.LogLevel.Information)
-//   .build();
-
-// async function start() {
-//   try {
-//     await connection.start();
-//     console.log("SignalR Connected.");
-//   } catch (err) {
-//     console.log(err);
-//     setTimeout(start, 5000);
-//   }
-// }
-
-// connection.on("ReceiveRoomMessage", (data) => {
-//   const list = document.getElementById("messageResponses");
-
-//   const messagesArray = Array.isArray(data) ? data : [data];
-
-//   messagesArray.forEach((msg) => {
-//     const { content, id, roomId, senderId, type, createdAtUtc } = msg;
-//     const { reactions } = msg;
-//     const emojis = reactions.map((emReact) => emReact.emoji).join(" ");
-
-//     const li = document.createElement("li");
-
-//     li.textContent = `User: ${senderId} said => ${id} ${content}-${emojis}`;
-//     list.appendChild(li);
-//   });
-// });
-
-// connection.onclose(async () => {
-//   await start();
-// });
-
-// start();
-// function buttonClicked() {
-//   let joinbutton = document.getElementById("joinRoomButton");
-
-//   joinbutton.addEventListener("click", async () => {
-//     const roomId = document.getElementById("roomIdInput").value;
-//     try {
-//       await connection.invoke("SubscribeToRoom", roomId);
-//       console.log("connected to room");
-//     } catch (error) {
-//       console.error(`Error ====> ${error}`);
-//     }
-//   });
-
-//   let leavebutton = document.getElementById("leaveRoomButton");
-//   leavebutton.addEventListener("click", async () => {
-//     const roomId = document.getElementById("roomIdInput").value;
-//     try {
-//       await connection.invoke("UnsubscribeFromRoom", roomId);
-//       console.log("left the room");
-//     } catch (error) {
-//       console.error(`Error ====> ${error}`);
-//     }
-//   });
-
-//   let sendMessageButton = document.getElementById("sendMessageButton");
-//   sendMessageButton.addEventListener("click", async () => {
-//     const roomId = document.getElementById("roomIdInput").value;
-//     const messageContent = document.getElementById("messageInput").value;
-//     try {
-//       await connection.invoke("SendRoomMessage", roomId, messageContent);
-//       console.log("message send successfully");
-//     } catch (error) {
-//       console.error(`Error ====> ${error}`);
-//     }
-//   });
-
-//   let getMessagesButton = document.getElementById("getMessagesButton");
-//   getMessagesButton.addEventListener("click", async () => {
-//     const roomId = document.getElementById("roomIdInput").value;
-//     try {
-//       await connection.invoke("GetRoomMessages", roomId);
-//       console.log("message received successfully");
-//     } catch (error) {
-//       console.error(`Error ====> ${error}`);
-//     }
-//   });
-
-//   let addReactionButton = document.getElementById("addReaction");
-//   addReactionButton.addEventListener("click", async () => {
-//     const messageContent = document.getElementById("messageInput").value;
-//     const emojiContent = document.getElementById("emojiInput").value;
-
-//     try {
-//       await connection.invoke("AddReaction", messageContent, emojiContent);
-//       console.log("reaction added");
-//     } catch (error) {
-//       console.error(`Error ====> ${error}`);
-//     }
-//   });
-
-//   let removeReactionButton = document.getElementById("removeReaction");
-//   removeReactionButton.addEventListener("click", async () => {
-//     const messageContent = document.getElementById("messageInput").value;
-//     const emojiContent = document.getElementById("emojiInput").value;
-
-//     try {
-//       await connection.invoke("RemoveReaction", messageContent, emojiContent);
-//       console.log("reaction removed");
-//     } catch (error) {
-//       console.error(`Error ====> ${error}`);
-//     }
-//   });
-
-//   let editMessageButton = document.getElementById("editMessageButton");
-//   editMessageButton.addEventListener("click", async () => {
-//     const messageContent = document.getElementById("messageInput").value;
-//     const emojiContent = document.getElementById("emojiInput").value;
-
-//     try {
-//       await connection.invoke("EditMessage", messageContent, emojiContent);
-//       console.log("message edited");
-//     } catch (error) {
-//       console.error(`Error ====> ${error}`);
-//     }
-//   });
-
-//   let deleteMessageButton = document.getElementById("deleteMessageButton");
-//   deleteMessageButton.addEventListener("click", async () => {
-//     const messageContent = document.getElementById("messageInput").value;
-
-//     try {
-//       await connection.invoke("DeleteMessage", messageContent);
-//       console.log("message deleted");
-//     } catch (error) {
-//       console.error(`Error ====> ${error}`);
-//     }
-//   });
-// }
-
-// buttonClicked();
-
 let connection = null;
 let isConnected = false;
 
@@ -236,24 +97,36 @@ function updateConnectionStatus(status) {
   }
 }
 
+function logEvent(label, data) {
+  const log = document.getElementById("eventLog");
+  const li = document.createElement("li");
+  const time = new Date().toLocaleTimeString();
+  li.innerHTML = `<span class="log-time">${time}</span> <span class="log-label">${label}</span> <span class="log-data">${JSON.stringify(data)}</span>`;
+  log.prepend(li);
+}
+
 function setupSignalRHandlers() {
   connection.on("ReceiveRoomMessage", (data) => {
-    const list = document.getElementById("messageResponses");
-
     const messagesArray = Array.isArray(data) ? data : [data];
-
     messagesArray.forEach((msg) => {
-      const { content, id, roomId, senderId, type, createdAtUtc, reactions } =
-        msg;
-      const emojis = reactions
-        ? reactions.map((emReact) => emReact.emoji).join(" ")
-        : "";
-
-      const li = document.createElement("li");
-      li.textContent = `User: ${senderId} said => ${id} ${content} ${emojis}`;
-      list.appendChild(li);
+      const { content, id, roomId, senderId, reactions } = msg;
+      const emojis = reactions ? reactions.map((r) => r.emoji).join(" ") : "";
+      logEvent("ReceiveRoomMessage", { senderId, id, content, emojis });
     });
   });
+
+  connection.on("JoinRoomMessage", (data) => logEvent("JoinRoomMessage", data));
+  connection.on("LeaveRoomMessage", (data) => logEvent("LeaveRoomMessage", data));
+  connection.on("RemovedFromRoom", (data) => logEvent("RemovedFromRoom", data));
+  connection.on("MemberRoleChanged", (data) => logEvent("MemberRoleChanged", data));
+  connection.on("RoomRenamed", (data) => logEvent("RoomRenamed", data));
+  connection.on("RoomDeleted", (data) => logEvent("RoomDeleted", data));
+  connection.on("ReactionAdded", (data) => logEvent("ReactionAdded", data));
+  connection.on("ReactionRemoved", (data) => logEvent("ReactionRemoved", data));
+  connection.on("MessageEdited", (data) => logEvent("MessageEdited", data));
+  connection.on("MessageDeleted", (data) => logEvent("MessageDeleted", data));
+  connection.on("UserStartedTyping", (data) => logEvent("UserStartedTyping", data));
+  connection.on("UserStoppedTyping", (data) => logEvent("UserStoppedTyping", data));
 }
 
 function setupConnectionButtons() {
@@ -270,6 +143,58 @@ function setupConnectionButtons() {
 
   disconnectButton.addEventListener("click", async () => {
     await disconnect();
+  });
+}
+
+function setupTypingIndicator() {
+  const contentInput = document.getElementById("sendMsgContentInput");
+  const typingStatus = document.getElementById("typingStatus");
+  let isTyping = false;
+  let typingTimeout = null;
+
+  async function sendTypingStarted() {
+    const roomId = document.getElementById("sendRoomIdInput").value;
+    if (!roomId || !isConnected) return;
+    try {
+      await connection.invoke("TypingStarted", roomId);
+      typingStatus.textContent = "Typing...";
+      typingStatus.classList.remove("hidden");
+    } catch (err) {
+      console.error("TypingStarted error:", err);
+    }
+  }
+
+  async function sendTypingStopped() {
+    const roomId = document.getElementById("sendRoomIdInput").value;
+    if (!roomId || !isConnected) return;
+    try {
+      await connection.invoke("TypingStopped", roomId);
+      typingStatus.textContent = "";
+      typingStatus.classList.add("hidden");
+    } catch (err) {
+      console.error("TypingStopped error:", err);
+    }
+  }
+
+  contentInput.addEventListener("input", () => {
+    if (!isTyping) {
+      isTyping = true;
+      sendTypingStarted();
+    }
+
+    clearTimeout(typingTimeout);
+    typingTimeout = setTimeout(async () => {
+      isTyping = false;
+      await sendTypingStopped();
+    }, 1500);
+  });
+
+  contentInput.addEventListener("blur", () => {
+    if (isTyping) {
+      clearTimeout(typingTimeout);
+      isTyping = false;
+      sendTypingStopped();
+    }
   });
 }
 
@@ -338,6 +263,31 @@ function setupChatButtons() {
         await connection.invoke("LeaveRoom", roomId);
       } catch (error) {
         console.error("Error leaving room:", error);
+      }
+    });
+
+  document
+    .getElementById("createRoomButton")
+    .addEventListener("click", async () => {
+      if (!isConnected) {
+        alert("Please connect to the hub first!");
+        return;
+      }
+
+      const roomName = document.getElementById("newRoomNameInput").value || null;
+      const roomType = document.getElementById("roomTypeInput").value;
+
+      if (!roomType) {
+        alert("Please enter a Room Type!");
+        return;
+      }
+
+      try {
+        await connection.invoke("CreateRoom", roomName, roomType);
+        console.log("Room created:", roomName, roomType);
+      } catch (error) {
+        console.error("Error creating room:", error);
+        alert("Failed to create room: " + error.message);
       }
     });
 
@@ -418,7 +368,7 @@ function setupChatButtons() {
     });
 
   document
-    .getElementById("sendMessageButton")
+    .getElementById("deleteRoomButton")
     .addEventListener("click", async () => {
       if (!isConnected) {
         alert("Please connect to the hub first!");
@@ -426,13 +376,28 @@ function setupChatButtons() {
       }
 
       const roomId = document.getElementById("roomIdInput").value;
-      const messageContent = document.getElementById("messageInput").value;
 
-      if (!roomId || !messageContent) {
-        alert("Please enter both Room ID and Message!");
+      if (!roomId) {
+        alert("Please enter a Room ID!");
         return;
       }
 
+      try {
+        await connection.invoke("DeleteRoom", roomId);
+        console.log("Room deleted:", roomId);
+      } catch (error) {
+        console.error("Error deleting room:", error);
+        alert("Failed to delete room: " + error.message);
+      }
+    });
+
+  document
+    .getElementById("sendMessageButton")
+    .addEventListener("click", async () => {
+      if (!isConnected) { alert("Please connect to the hub first!"); return; }
+      const roomId = document.getElementById("sendRoomIdInput").value;
+      const messageContent = document.getElementById("sendMsgContentInput").value;
+      if (!roomId || !messageContent) { alert("Please enter Room ID and Content!"); return; }
       try {
         await connection.invoke("SendRoomMessage", roomId, messageContent);
         console.log("Message sent successfully");
@@ -465,19 +430,10 @@ function setupChatButtons() {
     });
 
   document.getElementById("addReaction").addEventListener("click", async () => {
-    if (!isConnected) {
-      alert("Please connect to the hub first!");
-      return;
-    }
-
-    const messageId = document.getElementById("messageIdInput").value;
-    const emoji = document.getElementById("emojiInput").value;
-
-    if (!messageId || !emoji) {
-      alert("Please enter both Message ID and Emoji!");
-      return;
-    }
-
+    if (!isConnected) { alert("Please connect to the hub first!"); return; }
+    const messageId = document.getElementById("reactionMsgIdInput").value;
+    const emoji = document.getElementById("reactionEmojiInput").value;
+    if (!messageId || !emoji) { alert("Please enter Message ID and Emoji!"); return; }
     try {
       await connection.invoke("AddReaction", messageId, emoji);
       console.log("Reaction added");
@@ -486,76 +442,49 @@ function setupChatButtons() {
     }
   });
 
-  document
-    .getElementById("removeReaction")
-    .addEventListener("click", async () => {
-      if (!isConnected) {
-        alert("Please connect to the hub first!");
-        return;
-      }
+  document.getElementById("removeReaction").addEventListener("click", async () => {
+    if (!isConnected) { alert("Please connect to the hub first!"); return; }
+    const messageId = document.getElementById("reactionMsgIdInput").value;
+    const emoji = document.getElementById("reactionEmojiInput").value;
+    if (!messageId || !emoji) { alert("Please enter Message ID and Emoji!"); return; }
+    try {
+      await connection.invoke("RemoveReaction", messageId, emoji);
+      console.log("Reaction removed");
+    } catch (error) {
+      console.error("Error removing reaction:", error);
+    }
+  });
 
-      const messageId = document.getElementById("messageIdInput").value;
-      const emoji = document.getElementById("emojiInput").value;
+  document.getElementById("editMessageButton").addEventListener("click", async () => {
+    if (!isConnected) { alert("Please connect to the hub first!"); return; }
+    const messageId = document.getElementById("editMsgIdInput").value;
+    const newContent = document.getElementById("editMsgContentInput").value;
+    if (!messageId || !newContent) { alert("Please enter Message ID and New Content!"); return; }
+    try {
+      await connection.invoke("EditMessage", messageId, newContent);
+      console.log("Message edited");
+    } catch (error) {
+      console.error("Error editing message:", error);
+    }
+  });
 
-      if (!messageId || !emoji) {
-        alert("Please enter both Message ID and Emoji!");
-        return;
-      }
+  document.getElementById("deleteMessageButton").addEventListener("click", async () => {
+    if (!isConnected) { alert("Please connect to the hub first!"); return; }
+    const messageId = document.getElementById("deleteMsgIdInput").value;
+    if (!messageId) { alert("Please enter a Message ID!"); return; }
+    try {
+      await connection.invoke("DeleteMessage", messageId);
+      console.log("Message deleted");
+    } catch (error) {
+      console.error("Error deleting message:", error);
+    }
+  });
 
-      try {
-        await connection.invoke("RemoveReaction", messageId, emoji);
-        console.log("Reaction removed");
-      } catch (error) {
-        console.error("Error removing reaction:", error);
-      }
-    });
+  setupTypingIndicator();
 
-  document
-    .getElementById("editMessageButton")
-    .addEventListener("click", async () => {
-      if (!isConnected) {
-        alert("Please connect to the hub first!");
-        return;
-      }
-
-      const messageId = document.getElementById("messageIdInput").value;
-      const newContent = document.getElementById("messageInput").value;
-
-      if (!messageId || !newContent) {
-        alert("Please enter both Message ID and New Content!");
-        return;
-      }
-
-      try {
-        await connection.invoke("EditMessage", messageId, newContent);
-        console.log("Message edited");
-      } catch (error) {
-        console.error("Error editing message:", error);
-      }
-    });
-
-  document
-    .getElementById("deleteMessageButton")
-    .addEventListener("click", async () => {
-      if (!isConnected) {
-        alert("Please connect to the hub first!");
-        return;
-      }
-
-      const messageId = document.getElementById("messageIdInput").value;
-
-      if (!messageId) {
-        alert("Please enter a Message ID!");
-        return;
-      }
-
-      try {
-        await connection.invoke("DeleteMessage", messageId);
-        console.log("Message deleted");
-      } catch (error) {
-        console.error("Error deleting message:", error);
-      }
-    });
+  document.getElementById("clearLogButton").addEventListener("click", () => {
+    document.getElementById("eventLog").innerHTML = "";
+  });
 }
 
 document.addEventListener("DOMContentLoaded", () => {
